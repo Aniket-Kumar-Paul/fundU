@@ -1,1 +1,5 @@
 > npx thirdweb@latest create --contract 
+
+1. make crowdfunding smart contract 
+2. get goerli rpc testnet link from https://www.ankr.com/rpc/eth/eth_goerli/ and modify hardhat.config.js
+> npm run deploy
