@@ -1,0 +1,6 @@
+> npx thirdweb create --app
+
+1. assets -> all required assets (images etc.)
+2. constants -> helper scripts for easy imports 
+3. context -> react context api to use thirdweb logic within our application 
+4. utils -> utility functions that we use often
