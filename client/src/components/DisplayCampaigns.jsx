@@ -8,7 +8,7 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
 
     const handleNavigate = (campaign) => {
         navigate(`/campaign-details/${campaign.title
-            }`, { state: campaign }) // pass the state of campaign to the route
+            }`, { state: campaign }) // pass the state of campaign to the route, which can be accessed using useLocation() in CampaignDetails
     }
 
     return (
