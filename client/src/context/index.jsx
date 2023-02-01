@@ -1,19 +1,19 @@
-import React, {useContext, createContext} from 'react';
+import React, { useContext, createContext } from 'react';
 import { useAddress, useContract, useMetamask, useContractWrite } from '@thirdweb-dev/react';
 import { ethers } from 'ethers';
 
 const StateContext = createContext();
 
-export const StateContextProvider = ({children}) => {
+export const StateContextProvider = ({ children }) => {
     // contract address
-    const {contract} = useContract('0x8526414eA276f455C6514ca7483212c0f2b76AE2'); 
-    const {mutateAsync: createCampaign} = useContractWrite(contract, 'createCampaign'); // (contract, functionName)
+    const { contract } = useContract('0x995216d87C0c348c236BB48C32F0EFb07e4eD6d6');
+    const { mutateAsync: createCampaign } = useContractWrite(contract, 'createCampaign'); // (contract, functionName)
 
     // wallet address
     const address = useAddress();
     const connect = useMetamask();
 
-    const publishCampaign = async(form) => {
+    const publishCampaign = async (form) => {
         try {
             const data = await createCampaign([
                 address,
@@ -29,6 +29,31 @@ export const StateContextProvider = ({children}) => {
         }
     }
 
+    const getCampaigns = async () => {
+        const campaigns = await contract.call('getCampaigns');
+
+        const parsedCampaigns = campaigns.map((campaign, index) => ({
+            owner: campaign.owner,
+            title: campaign.title,
+            description: campaign.description,
+            target: ethers.utils.formatEther(campaign.target.toString()),
+            deadline: campaign.deadline.toNumber(),
+            amountCollected: ethers.utils.formatEther(campaign.amountCollected.toString()),
+            image: campaign.image,
+            pId: index
+        }));
+
+        return parsedCampaigns;
+    }
+
+    const getUserCampaigns = async () => {
+        const allCampaigns = await getCampaigns();
+
+        const filteredCampaigns = allCampaigns.filter((campaign) => campaign.owner === address);
+
+        return filteredCampaigns;
+    }
+
     return (
         <StateContext.Provider
             // value is going to be shared to all the components
@@ -37,7 +62,9 @@ export const StateContextProvider = ({children}) => {
                 contract,
                 connect,
                 createCampaign: publishCampaign, // rename publishCampaign to createCampaign 
-            }} 
+                getCampaigns,
+                getUserCampaigns
+            }}
         >
             {children}
         </StateContext.Provider>

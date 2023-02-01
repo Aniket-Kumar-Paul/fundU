@@ -47,6 +47,11 @@ contract MyContract {
         return numberOfCampaigns - 1; // index/id of the newly created campaign
     }
 
+    function deleteCampaign(uint256 _index) public {
+        require(msg.sender == campaigns[_index].owner);
+        delete campaigns[_index];
+    }
+
     function donateToCampaign(uint256 _id) public payable {
         uint256 amount = msg.value;
 
